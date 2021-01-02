@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useContext } from 'react';
 import { FiLogIn, FiLock, FiMail } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import * as yup from 'yup';
@@ -11,7 +11,9 @@ import Input from '../../components/Input';
 import { Background, Container, Content } from './styles';
 import getValidationErrors from '../../utils/getValidationErrors';
 
-interface InputFields {
+import { AuthContext } from '../../context/AuthContext';
+
+interface Credentials {
   email: string;
   password: string;
 }
@@ -19,27 +21,34 @@ interface InputFields {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const handleSubmit = useCallback(async (data: InputFields) => {
-    try {
-      formRef.current?.setErrors({});
+  const { signIn } = useContext(AuthContext);
 
-      const schema = yup.object().shape({
-        email: yup
-          .string()
-          .email('Digite um email válido!')
-          .required('O email é obrigatório!'),
-        password: yup.string().required('Digite a senha!'),
-      });
+  const handleSubmit = useCallback(
+    async (data: Credentials) => {
+      try {
+        formRef.current?.setErrors({});
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
-    } catch (error) {
-      const errors = getValidationErrors(error);
+        const schema = yup.object().shape({
+          email: yup
+            .string()
+            .email('Digite um email válido!')
+            .required('O email é obrigatório!'),
+          password: yup.string().required('Digite a senha!'),
+        });
 
-      formRef.current?.setErrors(errors);
-    }
-  }, []);
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        signIn(data);
+      } catch (error) {
+        const errors = getValidationErrors(error);
+
+        formRef.current?.setErrors(errors);
+      }
+    },
+    [signIn],
+  );
 
   return (
     <Container>
