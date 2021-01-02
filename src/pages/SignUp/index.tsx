@@ -1,4 +1,5 @@
 import React from 'react';
+import { Form } from '@unform/web';
 import { FiArrowLeft, FiLock, FiMail, FiUser } from 'react-icons/fi';
 import logo from '../../assets/logo.svg';
 
@@ -7,14 +8,24 @@ import Input from '../../components/Input';
 
 import { Background, Container, Content } from './styles';
 
+interface InputFields {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const SignUp: React.FC = () => {
+  function handleSubmit(data: InputFields): InputFields {
+    return data;
+  }
+
   return (
     <Container>
       <Background />
       <Content>
         <img src={logo} alt="Logo" />
 
-        <form>
+        <Form onSubmit={handleSubmit}>
           <h1>Faça seu cadastro</h1>
 
           <Input name="name" icon={FiUser} placeholder="Digite seu nome" />
@@ -27,7 +38,7 @@ const SignUp: React.FC = () => {
           />
 
           <Button>Criar conta</Button>
-        </form>
+        </Form>
 
         <a href="create">
           <FiArrowLeft />
