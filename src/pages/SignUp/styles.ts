@@ -7,6 +7,7 @@ export const Container = styled.div`
 
   display: flex;
   align-items: stretch;
+  overflow: hidden;
 `;
 
 const appearFromRight = keyframes`

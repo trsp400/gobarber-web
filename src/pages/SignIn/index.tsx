@@ -3,7 +3,7 @@ import { FiLogIn, FiLock, FiMail } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import * as yup from 'yup';
 import { FormHandles } from '@unform/core';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import logo from '../../assets/logo.svg';
 
 import Button from '../../components/Button';
@@ -25,6 +25,7 @@ const SignIn: React.FC = () => {
 
   const { user, signIn } = useAuth();
   const { addToast } = useToast();
+  const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data: Credentials) => {
@@ -48,15 +49,15 @@ const SignIn: React.FC = () => {
         addToast({
           type: 'success',
           title: 'Login realizado com succeso',
-          description: `Bem vindo, ${user.name.split(' ')[0]}`,
+          description: `Bem vindo ao GoBarber`,
         });
+
+        history.push('/dashboard');
       } catch (error) {
         if (error instanceof yup.ValidationError) {
           const errors = getValidationErrors(error);
 
           formRef.current?.setErrors(errors);
-
-          return;
         }
 
         addToast({
@@ -66,7 +67,7 @@ const SignIn: React.FC = () => {
         });
       }
     },
-    [addToast, signIn, user.name],
+    [addToast, history, signIn],
   );
 
   return (
